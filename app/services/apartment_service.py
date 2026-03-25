@@ -1,42 +1,22 @@
-import pandas as pd
-import numpy as np
 from sqlalchemy.orm import Session
-from models.apartment import Apartment
-import pickle
-from pytorch_tabnet.tab_model import TabNetRegressor
 
-from schemas.apartment_request import ApartmentRequest
+from app.ml_model.model import Prediction_model
+from app.models.apartment import Apartment
+from app.schemas.apartment import ApartmentRequest
 
-with open("scaler_X.pkl", "rb") as f:
-    scaler_X = pickle.load(f)
-with open("scaler_y.pkl", "rb") as f:
-    scaler_y = pickle.load(f)
-with open("feature_order.pkl", "rb") as f:
-    feature_order = pickle.load(f)
-
-model = TabNetRegressor()
-model.load_model("tabnet_model.zip")
+model = Prediction_model()
 
 
-def predict_price(data):
-    df = pd.DataFrame([data])
-    df["floor_ratio"] = df["floor"] / df["num_floors"].replace(0, 1)
-    df["living_ratio"] = df["living_area"] / df["total_area"].replace(0, 1)
-    df = pd.get_dummies(df)
-    for col in feature_order:
-        if col not in df.columns:
-            df[col] = 0
-    df = df[feature_order]
-    X_scaled = scaler_X.transform(df)
-    pred_scaled = model.predict(X_scaled).flatten()
-    pred_price = scaler_y.inverse_transform(pred_scaled.reshape(-1, 1)).flatten()[0]
-    return float(pred_price)
+def predict_price(data: ApartmentRequest) -> float:
+    data_dict = data.model_dump()
+    return model.predict(data_dict)
 
 
-def save_prediction(db: Session, data, price: float):
+def save_prediction(db: Session, data: ApartmentRequest, price: float, user_id: int):
     floor_ratio = data["floor"] / data["num_floors"] if data["num_floors"] else 0
     living_ratio = data["living_area"] / data["total_area"] if data["total_area"] else 0
     apartment = Apartment(
+        user_id=user_id,
         housing_type=data["housing_type"],
         district=data["district"],
         rooms=data["rooms"],
@@ -65,7 +45,7 @@ def save_prediction(db: Session, data, price: float):
         playground=data["playground"],
         floor_ratio=floor_ratio,
         living_ratio=living_ratio,
-        predicted_price=price
+        predicted_price=price,
     )
     db.add(apartment)
     db.commit()
