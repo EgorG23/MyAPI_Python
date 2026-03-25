@@ -1,16 +1,16 @@
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class TrackContributorBase(BaseModel):
+class TrackContributor(BaseModel):
     role: str = Field(..., max_length=50)
 
 
-class TrackContributorCreate(TrackContributorBase):
+class TrackContributorCreate(TrackContributor):
     track_id: int
     artist_id: int
 
 
-class TrackContributorResponse(TrackContributorBase):
+class TrackContributorResponse(TrackContributor):
     id: int
     track_id: int
     artist_id: int

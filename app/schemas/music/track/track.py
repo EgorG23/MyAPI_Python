@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class TrackBase(BaseModel):
+class Track(BaseModel):
     spotify_id: str = Field(..., max_length=100)
     title: str = Field(..., max_length=255)
     genre: Optional[str] = Field(None, max_length=100)
@@ -12,11 +12,11 @@ class TrackBase(BaseModel):
     energy: Optional[float] = Field(None, ge=0, le=1)
 
 
-class TrackCreate(TrackBase):
+class TrackCreate(Track):
     album_id: int
 
 
-class TrackResponse(TrackBase):
+class TrackResponse(Track):
     id: int
     album_id: int
     created_at: datetime.datetime

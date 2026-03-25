@@ -12,7 +12,6 @@ class AlbumContributor(Base):
     artist_id = Column(Integer, ForeignKey("artists.id", ondelete="CASCADE"), nullable=False)
     role = Column(String(50), nullable=False)
 
-    # Relationships
     album = relationship("Album", back_populates="album_contributors")
     artist = relationship("Artist", back_populates="album_contributors")
 

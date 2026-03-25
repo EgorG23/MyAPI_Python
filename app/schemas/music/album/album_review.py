@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class AlbumReviewBase(BaseModel):
+class AlbumReview(BaseModel):
     overall_rating: float = Field(..., ge=0.0, le=10.0)
     concept_rating: float = Field(..., ge=0.0, le=10.0)
     visual_rating: float = Field(..., ge=0.0, le=10.0)
@@ -12,11 +12,11 @@ class AlbumReviewBase(BaseModel):
     comment: Optional[str] = Field(None, max_length=2000)
 
 
-class AlbumReviewCreate(AlbumReviewBase):
+class AlbumReviewCreate(AlbumReview):
     album_id: int
 
 
-class AlbumReviewResponse(AlbumReviewBase):
+class AlbumReviewResponse(AlbumReview):
     id: int
     album_id: int
     user_id: int

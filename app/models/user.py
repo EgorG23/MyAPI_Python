@@ -5,6 +5,8 @@ from sqlalchemy import Column, DateTime, Integer, String, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
+from app.models.music.album.album_review import AlbumReview
+from app.models.music.track.track_rating import TrackRating
 
 
 class User(Base):

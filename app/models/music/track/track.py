@@ -22,7 +22,6 @@ class Track(Base):
     created_at = Column(DateTime, server_default=func.now(UTC), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(UTC), onupdate=func.now(UTC), nullable=False)
 
-    # Relationships
     album = relationship("Album", back_populates="tracks")
     track_ratings: List["TrackRating"] = relationship(
         "TrackRating", back_populates="track", cascade="all, delete-orphan"

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -9,20 +11,20 @@ router = APIRouter()
 
 
 @router.post("/register")
-def register(data: LoginRequest, db: Session = Depends(get_db)):
+def register(data: LoginRequest, db: Annotated[Session, Depends(get_db)]):
     return register_user(db, data.email, data.password)
 
 
 @router.post("/login")
-def login(data: LoginRequest, db: Session = Depends(get_db)):
+def login(data: LoginRequest, db: Annotated[Session, Depends(get_db)]):
     return login_user(db, data.email, data.password)
 
 
 @router.post("/refresh")
-def refresh(data: RefreshRequest, db: Session = Depends(get_db)):
+def refresh(data: RefreshRequest, db: Annotated[Session, Depends(get_db)]):
     return refresh_access_token(db, data.refresh_token)
 
 
 @router.post("/logout")
-def logout_user(data: RefreshRequest, db: Session = Depends(get_db)):
+def logout_user(data: RefreshRequest, db: Annotated[Session, Depends(get_db)]):
     return logout(db, data.refresh_token)
