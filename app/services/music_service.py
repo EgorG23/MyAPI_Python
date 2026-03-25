@@ -1,6 +1,6 @@
+from app.models.music.music import UserAlbumRating, UserTrackRating
 from sqlalchemy.orm import Session
 
-from app.models.music.music import UserAlbumRating, UserTrackRating
 from app.schemas.music import AlbumRatingCreate
 
 
